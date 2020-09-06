@@ -1,5 +1,5 @@
 # NavigationSearchBar
-An extension to SwiftUI that will include the UISearchController.
+An extension to SwiftUI that will add the UISearchController.
 
 
 ## Installation
