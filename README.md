@@ -85,3 +85,9 @@ struct ContentView_Previews: PreviewProvider {
 }
 
 ```
+
+## Donate
+
+If you have been enjoying my free Swift package, please consider showing your support by buying me a coffee through the link below. Thanks in advance!
+
+<a href="https://www.buymeacoffee.com/markvanwijnen" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/arial-yellow.png" height="60px" alt="Buy Me A Coffee"></a>
