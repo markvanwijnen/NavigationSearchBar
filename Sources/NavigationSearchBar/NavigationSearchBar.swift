@@ -1,4 +1,4 @@
-// Copyright © 2020 Mark van Wijnen
+// Copyright © 2020-2021 Mark van Wijnen
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the “Software”), to deal
 // in the Software without restriction, including without limitation the rights
@@ -204,25 +204,40 @@ fileprivate struct NavigationSearchBar<SearchResultsContent>: UIViewControllerRe
     
     class Wrapper: UIViewController {
         var searchController: UISearchController? {
-            get {
-                self.parent?.navigationItem.searchController
-            }
-            set {
-                self.parent?.navigationItem.searchController = newValue
+            didSet {
+                self.parent?.navigationItem.searchController = self.searchController
             }
         }
         
-        var hidesSearchBarWhenScrolling: Bool {
-            get {
-                self.parent?.navigationItem.hidesSearchBarWhenScrolling ?? true
-            }
-            set {
-                self.parent?.navigationItem.hidesSearchBarWhenScrolling = newValue
+        var hidesSearchBarWhenScrolling: Bool = false {
+            didSet {
+                self.parent?.navigationItem.hidesSearchBarWhenScrolling = hidesSearchBarWhenScrolling
             }
         }
         
         func navigationBarSizeToFit() {
             self.parent?.navigationController?.navigationBar.sizeToFit()
+        }
+        
+        override func willMove(toParent parent: UIViewController?) {
+            super.willMove(toParent: parent)
+            parent?.navigationItem.searchController = searchController
+            parent?.navigationItem.hidesSearchBarWhenScrolling = hidesSearchBarWhenScrolling
+            navigationBarSizeToFit()
+        }
+        
+        override func viewWillAppear(_ animated: Bool) {
+            if let parent = parent, let searchResultsController = searchController?.searchResultsController {
+                parent.addChild(searchResultsController)
+                searchController?.view.layoutIfNeeded()
+            }
+         }
+        
+        override func viewDidAppear(_ animated: Bool) {
+            if let parent = parent, let searchResultsController = searchController?.searchResultsController {
+                parent.addChild(searchResultsController)
+                searchController?.view.layoutIfNeeded()
+            }
         }
     }
 }

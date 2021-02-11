@@ -15,7 +15,7 @@ let package = Package(
   dependencies: [
     .package(
       url: "https://github.com/markvanwijnen/NavigationSearchBar.git",
-      from: "1.0.0"),
+      from: "1.1.0"),
 
     ...
   ],
@@ -72,7 +72,9 @@ struct ContentView: View {
                                         print("Present Bookmarks")
                                     }
                                  ], searchResultsContent: {
-                                    Text("Search Results for \(text) in \(String(scopeSelection))")
+                                     NavigationLink(destination: Text("Destination")) {
+                                         Text("Search Results for \(text) in \(String(scopeSelection))")
+                                     }
                                  })
         }
     }
