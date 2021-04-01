@@ -152,6 +152,12 @@ fileprivate struct NavigationSearchBar<SearchResultsContent>: UIViewControllerRe
             
             searchBar.selectedScopeButtonIndex = scopeSelection
         }
+        
+        if let searchResultsController = wrapper.searchController?.searchResultsController {
+            if let scrollView = searchResultsController.view.firstScrollView() {
+                scrollView.automaticallyAdjustsScrollViewInsets(navigationController: searchResultsController.navigationController)
+            }
+        }
     }
     
     class Coordinator: NSObject, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate {
@@ -238,6 +244,35 @@ fileprivate struct NavigationSearchBar<SearchResultsContent>: UIViewControllerRe
                 parent.addChild(searchResultsController)
                 searchController?.view.layoutIfNeeded()
             }
+        }
+    }
+}
+
+extension UIScrollView {
+    func automaticallyAdjustsScrollViewInsets(navigationController: UINavigationController?) {
+        var navigationBarHeight: CGFloat = 0.0
+        var toolbarHeight: CGFloat = 0.0
+        
+        if let navigationController = navigationController {
+            navigationBarHeight = navigationController.isNavigationBarHidden ? 0 : navigationController.navigationBar.frame.height
+            toolbarHeight = navigationController.isToolbarHidden ? 0 : navigationController.toolbar.frame.height
+        }
+
+        let absolutePosition = self.superview?.convert(self.frame, to: nil) ?? .zero
+        let statusBarHeight: CGFloat = absolutePosition.origin.y <= 0 ? UIApplication.shared.windows.first?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0 : 0
+        let topOffset = navigationBarHeight + statusBarHeight
+        
+        self.contentInset = UIEdgeInsets(top: topOffset, left: 0, bottom: toolbarHeight, right: 0)
+        self.contentOffset = CGPoint(x: self.contentOffset.x, y: -topOffset)
+    }
+}
+
+extension UIView {
+    func firstScrollView() -> UIScrollView? {
+        if let scrollView = self as? UIScrollView {
+            return scrollView
+        } else {
+            return self.subviews.first?.firstScrollView()
         }
     }
 }
