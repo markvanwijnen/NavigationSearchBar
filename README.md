@@ -15,7 +15,7 @@ let package = Package(
   dependencies: [
     .package(
       url: "https://github.com/markvanwijnen/NavigationSearchBar.git",
-      from: "1.1.0"),
+      from: "1.2.0"),
 
     ...
   ],
