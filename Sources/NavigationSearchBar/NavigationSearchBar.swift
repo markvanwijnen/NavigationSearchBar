@@ -154,13 +154,15 @@ fileprivate struct NavigationSearchBar<SearchResultsContent>: UIViewControllerRe
         }
         
         if let searchResultsController = wrapper.searchController?.searchResultsController {
+            searchResultsController.navigationController?.delegate = context.coordinator
+            
             if let scrollView = searchResultsController.view.firstScrollView() {
                 scrollView.automaticallyAdjustsScrollViewInsets(navigationController: searchResultsController.navigationController)
             }
         }
     }
     
-    class Coordinator: NSObject, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate {
+    class Coordinator: NSObject, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITableViewDelegate, UINavigationControllerDelegate {
         let representable: NavigationSearchBar
         
         let searchController: UISearchController
@@ -205,6 +207,17 @@ fileprivate struct NavigationSearchBar<SearchResultsContent>: UIViewControllerRe
         
         func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
             DispatchQueue.main.async { [weak self] in self?.representable.scopeSelection = selectedScope }
+        }
+        
+        // MARK: - UINavigationControllerDelegate
+        func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+            if viewController == searchController.searchResultsController?.parent {
+                if let tableView = searchController.searchResultsController?.view.firstTableView() {
+                    if let selectedIndexPath = tableView.indexPathForSelectedRow {
+                        tableView.deselectRow(at: selectedIndexPath, animated: true)
+                    }
+                }
+            }
         }
     }
     
@@ -275,4 +288,13 @@ extension UIView {
             return self.subviews.first?.firstScrollView()
         }
     }
+    
+    func firstTableView() -> UITableView? {
+        if let tableView = self as? UITableView {
+            return tableView
+        } else {
+            return self.subviews.first?.firstTableView()
+        }
+    }
 }
+
