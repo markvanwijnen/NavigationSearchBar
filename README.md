@@ -1,3 +1,12 @@
+# New in iOS 15
+There is now a native way to include a search bar in your SwiftUI apps.
+
+Check out these sources:
+1. Apple Documentation - https://developer.apple.com/documentation/swiftui/form/searchable(text:placement:)
+2. Tutorial - https://www.hackingwithswift.com/quick-start/swiftui/how-to-add-a-search-bar-to-filter-your-data
+
+# Prior to iOS 15
+
 # NavigationSearchBar
 An extension to SwiftUI that will add the UISearchController.
 
