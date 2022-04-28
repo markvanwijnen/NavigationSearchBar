@@ -250,13 +250,22 @@ fileprivate struct NavigationSearchBar<SearchResultsContent>: UIViewControllerRe
                 parent.addChild(searchResultsController)
                 searchController?.view.layoutIfNeeded()
             }
-         }
+        }
         
         override func viewDidAppear(_ animated: Bool) {
             if let parent = parent, let searchResultsController = searchController?.searchResultsController {
                 parent.addChild(searchResultsController)
                 searchController?.view.layoutIfNeeded()
             }
+        }
+
+        override func viewWillDisappear(_ animated: Bool) {
+            if parent?.navigationItem.searchController == searchController {
+                // Remove our search controller.
+                parent?.navigationItem.searchController = nil
+            }
+
+            super.viewWillDisappear(animated)
         }
     }
 }
